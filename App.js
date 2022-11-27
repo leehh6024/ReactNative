@@ -1,3 +1,4 @@
+import * as Location from "expo-location";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -7,7 +8,9 @@ import {
   Dimensions,
   ActivityIndicator,
 } from "react-native";
-import * as Location from "expo-location";
+
+// import DeviceInfo from "react-native-device-info";
+// import { getUniqueId, getManufacturer } from "react-native-device-info";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const API_KEY = "ef3118cc42b4ccfbf7cc900504e6b835";
@@ -25,7 +28,6 @@ export default function App() {
     const {
       coords: { latitude, longitude },
     } = await Location.getCurrentPositionAsync({ accuracy: 5 });
-
     const location = await Location.reverseGeocodeAsync(
       { latitude, longitude },
       { useGoogleMaps: false }
@@ -33,15 +35,17 @@ export default function App() {
     setCity(location[0].city);
 
     const response = await fetch(
-      `api.openweathermap.org/data/2.5/forecast/daily?lat=${latitude}&lon=${longitude}&cnt={cnt}&appid=${API_KEY}&units=metric`
-    );
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitide}&lon=${longitude}&appid=${API_KEY}&units=metric`
+    ).catch((error) => {
+      console.log(error);
+    });
     const json = await response.json();
     setDays(json.daily);
   };
   useEffect(() => {
     getWeather();
   }, []);
-
+  console.log(days);
   return (
     <View style={styles.container}>
       <View style={styles.city}>
@@ -54,36 +58,34 @@ export default function App() {
         // indicatorStyle="white" // 페이지 하단 스크롤 상태표시 색상 입히는것.
         contentContainerStyle={styles.weather}
       >
-        {days.length === 0 ? (
+        {days?.length === 0 ? (
           <View style={styles.day}>
             <ActivityIndicator
               color="white"
               size="large"
               style={{ marginTop: 10 }}
-            ></ActivityIndicator>
+            />
           </View>
         ) : (
-          days.map((day, index) => {
-            {
-              new Date(day.at * 1000).toString().substring(0, 10);
-            }
+          days?.map((day, index) => (
             <View key={index} style={styles.day}>
               <Text style={styles.temp}>
                 {parseFloat(day.temp.day).toFixed(1)}
               </Text>
               <Text style={styles.description}>{day.weather[0].main}</Text>
               <Text style={styles.tinyText}>{day.weather[0].description}</Text>
-            </View>;
-          })
+            </View>
+          ))
         )}
       </ScrollView>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "tomato",
+    backgroundColor: "#6AC47A",
   },
   city: {
     flex: 1.2,
