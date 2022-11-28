@@ -35,17 +35,15 @@ export default function App() {
     setCity(location[0].city);
 
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${latitide}&lon=${longitude}&appid=${API_KEY}&units=metric`
-    ).catch((error) => {
-      console.log(error);
-    });
+      `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts&appid=${API_KEY}&units=metric`
+    );
     const json = await response.json();
     setDays(json.daily);
   };
   useEffect(() => {
     getWeather();
   }, []);
-  console.log(days);
+  console.log("days =>", days);
   return (
     <View style={styles.container}>
       <View style={styles.city}>
@@ -74,6 +72,7 @@ export default function App() {
               </Text>
               <Text style={styles.description}>{day.weather[0].main}</Text>
               <Text style={styles.tinyText}>{day.weather[0].description}</Text>
+              <Text style={styles.tinyText}>1234</Text>
             </View>
           ))
         )}
@@ -85,7 +84,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#6AC47A",
+    backgroundColor: "#1AC47A",
   },
   city: {
     flex: 1.2,
