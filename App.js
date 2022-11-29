@@ -75,7 +75,7 @@ export default function App() {
           </View>
         ) : (
           days?.map((day, index) => (
-            <View key={index} style={styles.day}>
+            <View View key={index} style={styles.day}>
               <View
                 style={{
                   flexDirection: "row",
